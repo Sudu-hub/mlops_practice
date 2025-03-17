@@ -11,8 +11,9 @@ X_train = train_data.iloc[:, 0:-1].values
 y_train = train_data.iloc[:, -1].values
 
 # Train the Gradient Boosting Classifier
-clf = GradientBoostingClassifier(n_estimators=50)
+clf = GradientBoostingClassifier(n_estimators=50, learning_rate=0.1)
 clf.fit(X_train, y_train)
 
 # Save the trained model
 pickle.dump(clf, open('model.pkl', 'wb'))
+
