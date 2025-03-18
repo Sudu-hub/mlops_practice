@@ -7,9 +7,6 @@ from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer, WordNetLemmatizer
 import os
 
-train_data = pd.read_csv('./data/raw/train.csv')
-test_data = pd.read_csv('./data/raw/test.csv')
-
 nltk.download('wordnet')
 nltk.download('stopwords')
 
@@ -76,11 +73,20 @@ def normalized_sentence(sentence):
     sentence= lemmatization(sentence)
     return sentence
 
-train_processed_data = normalize_text(train_data)
-test_processed_data = normalize_text(test_data)
 
-data_path = os.path.join('data','processed')
-os.makedirs(data_path, exist_ok=True)
+def save_data(data_path, traindata, testdata):
+    os.makedirs(data_path, exist_ok=True)
+    traindata.to_csv(os.path.join(data_path,'train_processed.csv'))
+    testdata.to_csv(os.path.join(data_path,'test_processed.csv'))
 
-train_processed_data.to_csv(os.path.join(data_path,'train_processed.csv'))
-test_processed_data.to_csv(os.path.join(data_path,'test_processed.csv'))
+
+def main():
+    train_data = pd.read_csv('./data/raw/train.csv')
+    test_data = pd.read_csv('./data/raw/test.csv')
+    train_data = normalize_text(train_data)
+    test_data = normalize_text(test_data)
+    data_path = os.path.join('data','processed')
+    save_data(data_path, train_data,test_data)
+
+if __name__ == '__main__':
+    main()
