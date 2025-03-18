@@ -31,13 +31,13 @@ def save_model(model, output_path):
     with open(output_path, 'wb') as f:
         pickle.dump(model, f)
 
-def main(train_file, params_file, model_output):
+def main():
     """Complete pipeline for training and saving the model."""
-    params = load_params(params_file)
-    train_data = load_data(train_file)
+    params = load_params('params.yaml')
+    train_data = load_data('./data/features/train_bow.csv')
     X_train, y_train = split_data(train_data)
     model = train_model(X_train, y_train, params)
-    save_model(model, model_output)
+    save_model(model, 'model.pkl')
 
 if __name__ == '__main__':
     main()
