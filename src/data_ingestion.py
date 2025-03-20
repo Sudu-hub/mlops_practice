@@ -4,20 +4,21 @@ import yaml
 from sklearn.model_selection import train_test_split
 import os
 
-def load_params(params_path: str) -> float:
-    """Loads test size from a YAML file and handles exceptions."""
+def load_params(params_yaml):
+    """Load max_features from YAML config file."""
     try:
-        with open(params_path, 'r') as file:
-            params = yaml.safe_load(file)
-        return params['data_ingestion']['test_size']
+        with open(params_yaml,'r') as file:
+            params  = yaml.safe_load(file)
     except FileNotFoundError:
-        print(f"Error: File '{params_path}' not found. Using default test_size = 0.2")
-        #return 0.2  # Default test size
-    except KeyError:
-        print(f"Error: 'test_size' key missing in '{params_path}'. Using default test_size = 0.2")
-        #return 0.2
+        print('File not found')
+    
+    except ValueError:
+        print('please add float value')
+    
     except Exception as e:
-        print(f"Unexpected error while loading params: {e}. Using default test_size = 0.2")
+        print(e)
+    else:
+        return params['data_ingestion']['test_size']
         #return 0.2
 
 def load_data(url: str) -> pd.DataFrame:
