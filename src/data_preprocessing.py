@@ -6,9 +6,31 @@ import string
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer, WordNetLemmatizer
 import os
+import logging
 
-nltk.download('wordnet')
-nltk.download('stopwords')
+logger = logging.getLogger('data_preprocessing')
+logger.setLevel('DEBUG')
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel('DEBUG')
+
+file_handler = logging.FileHandler('errors.log')
+file_handler.setLevel('ERROR')
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+console_handler.setFormatter(formatter)
+file_handler.setFormatter(formatter)
+
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
+
+try:
+    nltk.download('wordnet')
+    nltk.download('stopwords')
+    logger.debug('nltk download successfully')
+except Exception as e:
+    logger.error('pls watch nltk error carefully and debug that')
+    raise
 
 def lemmatization(text):
     try:
@@ -86,9 +108,11 @@ def normalize_text(df):
         df.content=df.content.apply(lambda content : removing_punctuations(content))
         df.content=df.content.apply(lambda content : removing_urls(content))
         df.content=df.content.apply(lambda content : lemmatization(content))
+        logger.debug('traformed text successfully and saved in df')
         return df
     except Exception as e:
-        print(e)
+        logger.error('not saved in df')
+        raise
 
 def normalized_sentence(sentence):
     try:
@@ -128,9 +152,11 @@ def main():
         test_data = normalize_text(test_data)
         data_path = os.path.join('data','processed')
         save_data(data_path, train_data,test_data)
+        logger.debug('all of saved')
     
     except Exception as e:
-        print(e)
+        logger.error('pls do it again and save data')
+        raise
 
 if __name__ == '__main__':
     main()
